@@ -1,16 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useSaveUniverse } from '@/hooks/useSaveUniverse';
 import { StarField } from '@/components/StarField';
 import { GenerationCard } from '@/components/GenerationCard';
 import { GenerationModal } from '@/components/GenerationModal';
 import { MassGenerationModal } from '@/components/MassGenerationModal';
 import { UniverseViewer } from '@/components/UniverseViewer';
 import { MassResultsViewer } from '@/components/MassResultsViewer';
+import { SavedUniversesViewer } from '@/components/SavedUniversesViewer';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { 
-  Sparkles, Globe, Mountain, Crown, Users, Home, LogOut, Zap, Orbit
+  Sparkles, Globe, Mountain, Crown, Users, Home, LogOut, Zap, Orbit, Database
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -23,11 +25,16 @@ interface GeneratedItem {
 
 export default function Index() {
   const { user, loading, signOut } = useAuth();
+  const { saveMassGeneration, saveSingleElement, loadUniverses, deleteUniverse, savedUniverses, isLoading: isLoadingSaved, isSaving } = useSaveUniverse();
   const [modalOpen, setModalOpen] = useState(false);
   const [massModalOpen, setMassModalOpen] = useState(false);
   const [currentType, setCurrentType] = useState<GenerationType>('universe');
   const [currentContext, setCurrentContext] = useState<Record<string, unknown> | undefined>();
   const [generatedItems, setGeneratedItems] = useState<GeneratedItem[]>([]);
+
+  useEffect(() => {
+    if (user) loadUniverses();
+  }, [user, loadUniverses]);
 
   if (loading) {
     return (
@@ -47,13 +54,30 @@ export default function Index() {
     setModalOpen(true);
   };
 
-  const handleGenerated = (data: Record<string, unknown>) => {
+  const handleGenerated = async (data: Record<string, unknown>) => {
     setGeneratedItems(prev => [...prev, { type: currentType, data }]);
     toast.success(`${currentType} créé !`);
+    // Auto-save single element
+    try {
+      await saveSingleElement(currentType, data);
+      toast.success('Sauvegardé automatiquement !');
+      loadUniverses();
+    } catch {
+      // Already handled in hook
+    }
   };
 
-  const handleMassGenerated = (data: Record<string, unknown>) => {
+  const handleMassGenerated = async (data: Record<string, unknown>) => {
     setGeneratedItems(prev => [...prev, { type: 'mass', data }]);
+    // Auto-save entire hierarchy
+    await saveMassGeneration(data);
+    loadUniverses();
+  };
+
+  const handleDeleteUniverse = async (id: string) => {
+    if (confirm('Supprimer cet univers et tous ses éléments ?')) {
+      await deleteUniverse(id);
+    }
   };
 
   const creationTypes: { type: GenerationType; title: string; description: string; icon: React.ReactNode }[] = [
@@ -80,6 +104,20 @@ export default function Index() {
     <div className="min-h-screen cosmic-bg relative overflow-hidden">
       <StarField />
       
+      {/* Saving indicator */}
+      {isSaving && (
+        <motion.div
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-md"
+        >
+          <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+            <Database className="w-4 h-4 text-primary" />
+          </motion.div>
+          <span className="text-sm text-primary">Sauvegarde...</span>
+        </motion.div>
+      )}
+
       {/* Header */}
       <motion.header
         initial={{ y: -60, opacity: 0 }}
@@ -117,10 +155,9 @@ export default function Index() {
             Créez des Univers Entiers
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-            Générez des galaxies, planètes, nations, races et familles nobles. L'IA crée tout pour vous.
+            Générez des galaxies, planètes, nations, races et familles nobles. Tout est sauvegardé automatiquement.
           </p>
 
-          {/* Mass Generation CTA */}
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               onClick={() => setMassModalOpen(true)}
@@ -129,7 +166,7 @@ export default function Index() {
             >
               <Zap className="w-6 h-6" />
               Génération Massive
-              <Badge className="bg-cosmic-gold/20 text-cosmic-gold border-cosmic-gold/30 ml-2">NOUVEAU</Badge>
+              <InlineBadge className="bg-cosmic-gold/20 text-cosmic-gold border-cosmic-gold/30 ml-2">AUTO-SAVE</InlineBadge>
             </Button>
           </motion.div>
         </motion.section>
@@ -148,10 +185,24 @@ export default function Index() {
           </motion.div>
         </section>
 
-        {/* Generated Items */}
+        {/* Saved Universes */}
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mb-12"
+        >
+          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
+            <Database className="w-5 h-5 text-primary" />
+            Vos Univers Sauvegardés ({savedUniverses.length})
+          </h3>
+          <SavedUniversesViewer universes={savedUniverses} isLoading={isLoadingSaved} onDelete={handleDeleteUniverse} />
+        </motion.section>
+
+        {/* Recently Generated (session) */}
         {generatedItems.length > 0 && (
           <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h3 className="text-xl font-semibold mb-6">Vos Créations ({generatedItems.length})</h3>
+            <h3 className="text-xl font-semibold mb-6">Générations récentes ({generatedItems.length})</h3>
             <div className="space-y-6">
               {generatedItems.map((item, index) => (
                 <motion.div
@@ -178,7 +229,6 @@ export default function Index() {
   );
 }
 
-// Badge inline component for the button
-function Badge({ children, className }: { children: React.ReactNode; className?: string }) {
+function InlineBadge({ children, className }: { children: React.ReactNode; className?: string }) {
   return <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${className}`}>{children}</span>;
 }
