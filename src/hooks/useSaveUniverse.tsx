@@ -174,7 +174,7 @@ export function useSaveUniverse() {
             wealth_level: typeof data.wealth === 'object' ? (data.wealth as any)?.level : str(data.wealth_level),
             political_power: typeof data.political_power === 'object' ? JSON.stringify(data.political_power) : str(data.political_power),
             lands_controlled: typeof data.lands_controlled === 'object' ? JSON.stringify(data.lands_controlled) : str(data.lands_controlled),
-            notable_members: data.notable_members ? data.notable_members : null,
+            notable_members: data.notable_members ? JSON.parse(JSON.stringify(data.notable_members)) : null,
             alliances: typeof data.alliances === 'object' ? JSON.stringify(data.alliances) : str(data.alliances),
             rivals: typeof data.rivals === 'object' ? JSON.stringify(data.rivals) : str(data.rivals),
           }).select('id').single();
