@@ -354,8 +354,8 @@ export function useSaveUniverse() {
           for (const c of continents || []) {
             const { data: nations } = await supabase.from('nations').select('id').eq('continent_id', c.id);
             for (const n of nations || []) {
-              await supabase.from('families').delete().eq('nation_id', n.id);
-              await supabase.from('races').delete().eq('nation_id', n.id);
+              await supabase.from('families').delete().eq('nation_id', n.id as string);
+              await supabase.from('races').delete().eq('nation_id', n.id as string);
             }
             await supabase.from('nations').delete().eq('continent_id', c.id);
           }
