@@ -67,6 +67,7 @@ function TreeItem({ label, type, children, depth = 0 }: { label: string; type: s
 }
 
 export function SavedUniversesViewer({ universes, isLoading, onDelete }: SavedUniversesViewerProps) {
+  const navigate = useNavigate();
   if (isLoading) {
     return (
       <Card className="card-cosmic">
