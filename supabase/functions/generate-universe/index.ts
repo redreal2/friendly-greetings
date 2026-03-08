@@ -21,7 +21,7 @@ RÈGLES ABSOLUES DE DÉTAIL:
 11. Démographie: populations précises, taux de natalité, espérance de vie, migrations, diasporas
 12. Architecture: styles architecturaux, matériaux, monuments célèbres, merveilles du monde
 
-Tu réponds TOUJOURS en JSON structuré valide. JAMAIS de texte hors du JSON.`;
+Tu réponds TOUJOURS en JSON structuré valide. JAMAIS de texte hors du JSON. JAMAIS de blocs markdown (\`\`\`). Commence DIRECTEMENT par { et termine par }.`;
 
 const MASS_SYSTEM_PROMPT = `${SYSTEM_PROMPT}
 
