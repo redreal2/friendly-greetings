@@ -89,14 +89,34 @@ export function useUniverseGenerator() {
 
     setProgress(100);
 
-    // Parse final JSON
+    // Parse final JSON - try multiple strategies
     try {
-      const jsonMatch = fullContent.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+      // Strategy 1: Find outermost JSON object
+      const firstBrace = fullContent.indexOf('{');
+      const lastBrace = fullContent.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace > firstBrace) {
+        const jsonStr = fullContent.slice(firstBrace, lastBrace + 1);
+        return JSON.parse(jsonStr);
       }
     } catch (parseError) {
-      console.error('Failed to parse:', parseError);
+      console.warn('Strategy 1 failed, trying cleanup...', parseError);
+      try {
+        // Strategy 2: Clean up common issues
+        const firstBrace = fullContent.indexOf('{');
+        const lastBrace = fullContent.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace > firstBrace) {
+          let jsonStr = fullContent.slice(firstBrace, lastBrace + 1);
+          // Remove markdown code fences
+          jsonStr = jsonStr.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+          // Fix trailing commas before } or ]
+          jsonStr = jsonStr.replace(/,\s*([}\]])/g, '$1');
+          // Fix unescaped control characters
+          jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g, (c) => c === '\n' || c === '\r' || c === '\t' ? c : '');
+          return JSON.parse(jsonStr);
+        }
+      } catch (parseError2) {
+        console.error('Failed to parse JSON after cleanup:', parseError2);
+      }
     }
     return null;
   }, []);

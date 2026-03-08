@@ -51,8 +51,8 @@ export function MassGenerationModal({ open, onOpenChange, onGenerated }: MassGen
       onGenerated(result);
       setPrompt('');
       onOpenChange(false);
-    } else if (error) {
-      toast.error(error);
+    } else {
+      toast.error(error || 'Échec du parsing JSON. Réessayez avec moins d\'éléments.');
     }
   };
 
