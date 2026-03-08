@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Globe, Mountain, Crown, Users, Home, Orbit, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import { Sparkles, Globe, Mountain, Crown, Users, Home, Orbit, ChevronDown, ChevronRight, Trash2, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { SavedUniverse } from '@/hooks/useSaveUniverse';
 
@@ -66,6 +67,7 @@ function TreeItem({ label, type, children, depth = 0 }: { label: string; type: s
 }
 
 export function SavedUniversesViewer({ universes, isLoading, onDelete }: SavedUniversesViewerProps) {
+  const navigate = useNavigate();
   if (isLoading) {
     return (
       <Card className="card-cosmic">
@@ -108,9 +110,15 @@ export function SavedUniversesViewer({ universes, isLoading, onDelete }: SavedUn
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => onDelete(universe.id)} className="text-destructive hover:text-destructive">
-              <Trash2 className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button variant="outline" size="sm" onClick={() => navigate(`/explore/${universe.id}`)} className="gap-1.5 text-xs">
+                <Eye className="w-3.5 h-3.5" />
+                Explorer
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => onDelete(universe.id)} className="text-destructive hover:text-destructive">
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="max-h-[400px] overflow-y-auto">
             {universe.galaxies.map((galaxy) => (
