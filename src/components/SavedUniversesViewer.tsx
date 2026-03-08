@@ -110,9 +110,15 @@ export function SavedUniversesViewer({ universes, isLoading, onDelete }: SavedUn
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => onDelete(universe.id)} className="text-destructive hover:text-destructive">
-              <Trash2 className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button variant="outline" size="sm" onClick={() => navigate(`/explore/${universe.id}`)} className="gap-1.5 text-xs">
+                <Eye className="w-3.5 h-3.5" />
+                Explorer
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => onDelete(universe.id)} className="text-destructive hover:text-destructive">
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="max-h-[400px] overflow-y-auto">
             {universe.galaxies.map((galaxy) => (
