@@ -29,6 +29,7 @@ export default function Index() {
   const { saveMassGeneration, saveSingleElement, loadUniverses, deleteUniverse, savedUniverses, isLoading: isLoadingSaved, isSaving } = useSaveUniverse();
   const [modalOpen, setModalOpen] = useState(false);
   const [massModalOpen, setMassModalOpen] = useState(false);
+  const [stepwiseModalOpen, setStepwiseModalOpen] = useState(false);
   const [currentType, setCurrentType] = useState<GenerationType>('universe');
   const [currentContext, setCurrentContext] = useState<Record<string, unknown> | undefined>();
   const [generatedItems, setGeneratedItems] = useState<GeneratedItem[]>([]);
