@@ -47,6 +47,10 @@ serve(async (req) => {
     if (mode === "mass") {
       return await handleMassGeneration(prompt, scale, context, LOVABLE_API_KEY);
     }
+    if (mode === "stepwise") {
+      const { step, count, parentContext } = await Promise.resolve({ step: type, count: scale?.count || 1, parentContext: context });
+      return await handleStepwiseGeneration(prompt, step, count, parentContext, LOVABLE_API_KEY);
+    }
     return await handleSingleGeneration(prompt, type, context, LOVABLE_API_KEY);
   } catch (e) {
     console.error("Generate universe error:", e);
