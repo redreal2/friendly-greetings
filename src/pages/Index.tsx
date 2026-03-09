@@ -6,6 +6,7 @@ import { StarField } from '@/components/StarField';
 import { GenerationCard } from '@/components/GenerationCard';
 import { GenerationModal } from '@/components/GenerationModal';
 import { MassGenerationModal } from '@/components/MassGenerationModal';
+import { StepwiseGenerationModal } from '@/components/StepwiseGenerationModal';
 import { UniverseViewer } from '@/components/UniverseViewer';
 import { MassResultsViewer } from '@/components/MassResultsViewer';
 import { SavedUniversesViewer } from '@/components/SavedUniversesViewer';
