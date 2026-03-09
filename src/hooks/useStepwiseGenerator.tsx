@@ -229,7 +229,7 @@ export function useStepwiseGenerator() {
       record.notable_members = Array.isArray(data.notable_members) ? JSON.stringify(data.notable_members) : (data.notable_members || null);
     }
 
-    const { data: inserted, error } = await (supabase.from(table) as any).insert(record).select('id').single();
+    const { data: inserted, error } = await supabase.from(table as any).insert(record as any).select('id').single();
     if (error) {
       console.error(`Save ${step} error:`, error);
       return null;
