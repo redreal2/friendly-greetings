@@ -118,13 +118,12 @@ export function StepwiseGenerationModal({ open, onOpenChange, onComplete }: Step
                       {scale[ctrl.key as keyof typeof scale]}
                     </span>
                   </div>
-                  <Slider
-                    value={[scale[ctrl.key as keyof typeof scale]]}
-                    onValueChange={([v]) => setScale(prev => ({ ...prev, [ctrl.key]: v }))}
+                  <Input
+                    type="number"
+                    value={scale[ctrl.key as keyof typeof scale]}
+                    onChange={(e) => setScale(prev => ({ ...prev, [ctrl.key]: Math.max(ctrl.min, parseInt(e.target.value) || 0) }))}
                     min={ctrl.min}
-                    max={ctrl.max}
-                    step={1}
-                    className="cursor-pointer"
+                    className="h-8 w-full bg-background/50 border-border/50 font-mono text-center"
                   />
                 </motion.div>
               ))}
