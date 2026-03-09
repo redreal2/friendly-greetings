@@ -6,13 +6,14 @@ import { StarField } from '@/components/StarField';
 import { GenerationCard } from '@/components/GenerationCard';
 import { GenerationModal } from '@/components/GenerationModal';
 import { MassGenerationModal } from '@/components/MassGenerationModal';
+import { StepwiseGenerationModal } from '@/components/StepwiseGenerationModal';
 import { UniverseViewer } from '@/components/UniverseViewer';
 import { MassResultsViewer } from '@/components/MassResultsViewer';
 import { SavedUniversesViewer } from '@/components/SavedUniversesViewer';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { 
-  Sparkles, Globe, Mountain, Crown, Users, Home, LogOut, Zap, Orbit, Database
+  Sparkles, Globe, Mountain, Crown, Users, Home, LogOut, Zap, Orbit, Database, Layers
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -28,6 +29,7 @@ export default function Index() {
   const { saveMassGeneration, saveSingleElement, loadUniverses, deleteUniverse, savedUniverses, isLoading: isLoadingSaved, isSaving } = useSaveUniverse();
   const [modalOpen, setModalOpen] = useState(false);
   const [massModalOpen, setMassModalOpen] = useState(false);
+  const [stepwiseModalOpen, setStepwiseModalOpen] = useState(false);
   const [currentType, setCurrentType] = useState<GenerationType>('universe');
   const [currentContext, setCurrentContext] = useState<Record<string, unknown> | undefined>();
   const [generatedItems, setGeneratedItems] = useState<GeneratedItem[]>([]);
@@ -158,17 +160,31 @@ export default function Index() {
             Générez des galaxies, planètes, nations, races et familles nobles. Tout est sauvegardé automatiquement.
           </p>
 
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              onClick={() => setMassModalOpen(true)}
-              size="lg"
-              className="btn-cosmic gap-3 text-lg px-8 py-6"
-            >
-              <Zap className="w-6 h-6" />
-              Génération Massive
-              <InlineBadge className="bg-cosmic-gold/20 text-cosmic-gold border-cosmic-gold/30 ml-2">AUTO-SAVE</InlineBadge>
-            </Button>
-          </motion.div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={() => setStepwiseModalOpen(true)}
+                size="lg"
+                className="btn-cosmic gap-3 text-lg px-8 py-6"
+              >
+                <Layers className="w-6 h-6" />
+                Génération par Étapes
+                <InlineBadge className="bg-accent/20 text-accent border-accent/30 ml-2">FIABLE</InlineBadge>
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={() => setMassModalOpen(true)}
+                size="lg"
+                variant="outline"
+                className="gap-3 text-lg px-8 py-6 border-primary/30"
+              >
+                <Zap className="w-6 h-6" />
+                Génération Massive
+                <InlineBadge className="bg-cosmic-gold/20 text-cosmic-gold border-cosmic-gold/30 ml-2">RAPIDE</InlineBadge>
+              </Button>
+            </motion.div>
+          </div>
         </motion.section>
 
         {/* Single creation cards */}
@@ -225,6 +241,7 @@ export default function Index() {
 
       <GenerationModal open={modalOpen} onOpenChange={setModalOpen} type={currentType} context={currentContext} onGenerated={handleGenerated} />
       <MassGenerationModal open={massModalOpen} onOpenChange={setMassModalOpen} onGenerated={handleMassGenerated} />
+      <StepwiseGenerationModal open={stepwiseModalOpen} onOpenChange={setStepwiseModalOpen} onComplete={() => loadUniverses()} />
     </div>
   );
 }
