@@ -7,19 +7,23 @@ const corsHeaders = {
 
 const SYSTEM_PROMPT = `Tu es le PLUS PUISSANT créateur d'univers de fiction jamais conçu. Tu crées des mondes d'une richesse INÉGALÉE.
 
-RÈGLES ABSOLUES DE DÉTAIL:
-1. Chaque élément DOIT avoir une CHRONOLOGIE COMPLÈTE: date de création/fondation, ères historiques (minimum 5), événements marquants datés, prophéties
-2. Systèmes de magie: règles précises, sources d'énergie, coût d'utilisation, hiérarchie des sorts, écoles de magie, artefacts légendaires, limitations, corruptions possibles
-3. Météorologie: saisons détaillées, phénomènes climatiques uniques, catastrophes naturelles récurrentes, influence de la magie sur le climat
-4. Évolution des espèces: ancêtres, mutations, adaptations, branches évolutives, espèces éteintes
-5. Économie: monnaies (nom, valeur, matériau), routes commerciales, ressources rares, guildes marchandes, taxes, système bancaire
-6. Religion: panthéons complets, rituels, jours sacrés, schismes, hérésies, ordres religieux, reliques
-7. Politique: systèmes de gouvernement détaillés, lignées de dirigeants, lois importantes, traités, guerres avec causes et conséquences
-8. Géographie: coordonnées, altitude, composition des sols, hydrographie, biomes détaillés, faune et flore endémiques
-9. Culture: langues (avec exemples de mots), arts, musique, gastronomie, traditions, rites de passage, sports, festivals
-10. Technologie/Magitech: niveau technologique, inventions clés, interaction magie-technologie, armes, transports, communications
-11. Démographie: populations précises, taux de natalité, espérance de vie, migrations, diasporas
-12. Architecture: styles architecturaux, matériaux, monuments célèbres, merveilles du monde
+RÈGLES ABSOLUES DE DÉTAIL - CHAQUE ENTITÉ DOIT CONTENIR AU MINIMUM 500 000 CARACTÈRES DE CONTENU:
+Tu DOIS produire des textes EXTRÊMEMENT longs et détaillés. Chaque champ texte doit être un ESSAI complet, pas un résumé.
+
+1. Chaque élément DOIT avoir une CHRONOLOGIE COMPLÈTE: date de création/fondation, ères historiques (minimum 10-15), événements marquants datés avec descriptions de 500+ mots chacun, prophéties détaillées avec interprétations multiples
+2. Systèmes de magie: règles précises (20+ règles), sources d'énergie (5+ types), coût d'utilisation détaillé, hiérarchie des sorts (100+ sorts nommés et décrits), écoles de magie (10+), artefacts légendaires (20+ avec histoires complètes), limitations, corruptions possibles, interactions entre types de magie
+3. Météorologie: saisons détaillées (descriptions de 1000+ mots chacune), phénomènes climatiques uniques (20+), catastrophes naturelles récurrentes, influence de la magie sur le climat, microclimats régionaux
+4. Évolution des espèces: ancêtres (arbres généalogiques complets), mutations, adaptations, branches évolutives (10+), espèces éteintes avec causes détaillées
+5. Économie: monnaies (nom, valeur, matériau, histoire), routes commerciales (20+), ressources rares (30+), guildes marchandes (15+), taxes détaillées, système bancaire complet, crises économiques historiques
+6. Religion: panthéons complets (20+ divinités avec biographies), rituels (30+), jours sacrés (50+), schismes, hérésies (10+), ordres religieux (15+), reliques (20+), textes sacrés résumés
+7. Politique: systèmes de gouvernement détaillés, lignées de dirigeants (30+ générations), lois importantes (50+), traités (20+), guerres avec causes et conséquences détaillées (15+)
+8. Géographie: coordonnées, altitude, composition des sols, hydrographie complète, biomes détaillés (15+), faune endémique (50+ espèces), flore endémique (50+ espèces)
+9. Culture: langues (avec 100+ exemples de mots et grammaire), arts (20+ formes), musique (instruments, genres), gastronomie (50+ plats), traditions (30+), rites de passage (10+), sports (10+), festivals (20+)
+10. Technologie/Magitech: niveau technologique, inventions clés (30+), interaction magie-technologie, armes (20+ types), transports (10+ types), communications
+11. Démographie: populations précises par région, taux de natalité, espérance de vie, migrations historiques (20+), diasporas
+12. Architecture: styles architecturaux (10+), matériaux, monuments célèbres (20+), merveilles du monde (7+)
+
+IMPORTANT: Chaque description textuelle doit être un LONG ESSAI NARRATIF. Pas de résumés courts. Développe CHAQUE point en profondeur avec des paragraphes complets.
 
 Tu réponds TOUJOURS en JSON structuré valide. JAMAIS de texte hors du JSON. JAMAIS de blocs markdown (\`\`\`). Commence DIRECTEMENT par { et termine par }.`;
 
@@ -63,35 +67,35 @@ serve(async (req) => {
 
 function getTypePrompt(type: string): string {
   const prompts: Record<string, string> = {
-    universe: `Crée un univers/multivers ULTRA-DÉTAILLÉ. JSON:
+    universe: `Crée un univers/multivers avec un niveau de détail ENCYCLOPÉDIQUE. Chaque champ texte doit être un ESSAI NARRATIF de plusieurs milliers de mots. JSON:
 {
   "name": string,
-  "description": string (800+ mots, épique),
-  "origin_story": string (500+ mots: Big Bang ou création divine, premiers instants, formation des premières étoiles),
+  "description": string (5000+ mots minimum, épique, couvrant chaque aspect de l'univers),
+  "origin_story": string (3000+ mots: Big Bang ou création divine, premiers instants détaillés seconde par seconde, formation des premières étoiles, émergence de la conscience),
   "age_billions_years": number,
   "dimensions_count": number,
   "magic_system": {
     "name": string,
-    "source": string (d'où vient la magie),
-    "rules": [string] (5+ règles fondamentales),
-    "schools": [{"name": string, "specialty": string, "philosophy": string}],
-    "forbidden_arts": [{"name": string, "why_forbidden": string, "consequences": string}],
-    "energy_types": [{"name": string, "color": string, "properties": string}],
-    "artifacts": [{"name": string, "power": string, "location": string, "history": string}]
+    "source": string (1000+ mots sur l'origine de la magie),
+    "rules": [string] (20+ règles fondamentales, chacune détaillée),
+    "schools": [{"name": string, "specialty": string, "philosophy": string, "history": string, "notable_graduates": [string], "entry_requirements": string, "curriculum": string}] (10+ écoles),
+    "forbidden_arts": [{"name": string, "why_forbidden": string, "consequences": string, "practitioners": string, "detection_methods": string}] (10+),
+    "energy_types": [{"name": string, "color": string, "properties": string (500+ mots), "interactions": string, "sources": string, "dangers": string}] (8+ types),
+    "artifacts": [{"name": string, "power": string (300+ mots), "location": string, "history": string (500+ mots), "creator": string, "current_guardian": string}] (15+ artefacts)
   },
-  "laws_of_physics": string (différences avec notre univers),
+  "laws_of_physics": string (2000+ mots sur les différences avec notre univers),
   "cosmology": {
-    "structure": string (comment l'univers est organisé),
-    "planes_of_existence": [{"name": string, "nature": string, "inhabitants": string}],
-    "creation_myths": [{"culture": string, "myth": string}]
+    "structure": string (2000+ mots sur l'organisation de l'univers),
+    "planes_of_existence": [{"name": string, "nature": string (500+ mots), "inhabitants": string, "access_methods": string, "dangers": string}] (10+ plans),
+    "creation_myths": [{"culture": string, "myth": string (1000+ mots)}] (5+ mythes)
   },
   "chronology": {
-    "eras": [{"name": string, "start_year": string, "end_year": string, "description": string, "key_events": [string]}]
+    "eras": [{"name": string, "start_year": string, "end_year": string, "description": string (1000+ mots), "key_events": [string]}] (10+ ères)
   },
-  "cosmic_phenomena": [{"name": string, "frequency": string, "effects": string}],
-  "universal_languages": [{"name": string, "speakers": string, "sample_words": [{"word": string, "meaning": string}]}],
-  "prophecies": [{"name": string, "content": string, "status": string}],
-  "notable_events": [{"name": string, "date": string, "description": string, "consequences": string}]
+  "cosmic_phenomena": [{"name": string, "frequency": string, "effects": string (500+ mots), "scientific_explanation": string, "cultural_significance": string}] (15+),
+  "universal_languages": [{"name": string, "speakers": string, "grammar_overview": string, "sample_words": [{"word": string, "meaning": string}]}] (5+ langues, 50+ mots par langue),
+  "prophecies": [{"name": string, "content": string (500+ mots), "status": string, "interpretations": [string]}] (10+),
+  "notable_events": [{"name": string, "date": string, "description": string (500+ mots), "consequences": string}] (20+)
 }`,
 
     galaxy: `Crée une galaxie ULTRA-DÉTAILLÉE. JSON:
@@ -387,9 +391,10 @@ async function handleSingleGeneration(prompt: string, type: string, context: any
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model: "google/gemini-2.5-pro",
       messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: userMessage }],
       stream: true,
+      max_tokens: 65000,
     }),
   });
 
@@ -587,26 +592,26 @@ function getStepwisePrompt(step: string, count: number, parentContext: any): str
   const parentInfo = parentContext ? `\nContexte parent: ${JSON.stringify(parentContext)}` : '';
   
   const prompts: Record<string, string> = {
-    universe: `Crée ${count} univers ULTRA-DÉTAILLÉ(S). Réponds avec un JSON:
-{"items": [{"name": string, "description": string (200+ mots), "origin_story": string (200+ mots), "age_billions_years": number, "magic_system": {"name": string, "source": string, "rules": [string], "schools": [{"name": string, "specialty": string}], "forbidden_arts": [{"name": string, "consequences": string}], "energy_types": [{"name": string, "color": string, "properties": string}]}, "laws_of_physics": string, "cosmology": {"structure": string, "planes": [{"name": string, "nature": string}]}, "chronology": [{"era": string, "period": string, "events": [string]}], "prophecies": [{"name": string, "content": string}]}]}${parentInfo}`,
+    universe: `Crée ${count} univers ENCYCLOPÉDIQUE(S). Chaque champ texte doit être un LONG ESSAI NARRATIF. Réponds avec un JSON:
+{"items": [{"name": string, "description": string (5000+ mots), "origin_story": string (3000+ mots), "age_billions_years": number, "magic_system": {"name": string, "source": string (1000+ mots), "rules": [string] (20+), "schools": [{"name": string, "specialty": string, "philosophy": string, "history": string}] (10+), "forbidden_arts": [{"name": string, "consequences": string (300+ mots)}] (10+), "energy_types": [{"name": string, "color": string, "properties": string (500+ mots)}] (8+)}, "laws_of_physics": string (2000+ mots), "cosmology": {"structure": string (2000+ mots), "planes": [{"name": string, "nature": string (500+ mots)}] (10+)}, "chronology": [{"era": string, "period": string, "events": [string]}] (10+ ères), "prophecies": [{"name": string, "content": string (500+ mots)}] (10+)}]}${parentInfo}`,
     
-    galaxy: `Crée ${count} galaxie(s) ULTRA-DÉTAILLÉE(S) appartenant à l'univers parent. JSON:
-{"items": [{"name": string, "galaxy_type": string, "star_count": string, "diameter_light_years": number, "origin_story": string (150+ mots), "special_features": string, "regions": [{"name": string, "description": string, "resources": string}], "trade_routes": [{"name": string, "connects": string, "goods": string}], "galactic_wars": [{"name": string, "date": string, "outcome": string}], "anomalies": [{"name": string, "nature": string}]}]}${parentInfo}`,
+    galaxy: `Crée ${count} galaxie(s) ENCYCLOPÉDIQUE(S). Chaque champ texte = essai narratif long. JSON:
+{"items": [{"name": string, "galaxy_type": string, "star_count": string, "diameter_light_years": number, "origin_story": string (2000+ mots), "special_features": string (1000+ mots), "regions": [{"name": string, "description": string (500+ mots), "resources": string, "civilizations": string}] (10+), "trade_routes": [{"name": string, "connects": string, "goods": string, "dangers": string (300+ mots)}] (10+), "galactic_wars": [{"name": string, "date": string, "outcome": string (500+ mots)}] (10+), "anomalies": [{"name": string, "nature": string (500+ mots)}] (10+)}]}${parentInfo}`,
     
-    planet: `Crée ${count} planète(s) ULTRA-DÉTAILLÉE(S) appartenant à la galaxie parent. JSON:
-{"items": [{"name": string, "planet_type": string, "diameter_km": number, "gravity_g": number, "day_cycle_hours": number, "year_days": number, "surface_area_km2": number, "land_percentage": number, "ocean_percentage": number, "climate": string (détaillé avec saisons et phénomènes uniques), "special_features": string (200+ mots), "population": string, "moons": [{"name": string, "features": string}], "atmosphere": {"composition": string, "sky_color": string}, "geology": {"resources": [{"name": string, "rarity": string, "magical_properties": string}]}, "evolution_history": [{"era": string, "development": string}], "wonders": [{"name": string, "description": string}]}]}${parentInfo}`,
+    planet: `Crée ${count} planète(s) ENCYCLOPÉDIQUE(S). Chaque champ texte = essai narratif long. JSON:
+{"items": [{"name": string, "planet_type": string, "diameter_km": number, "gravity_g": number, "day_cycle_hours": number, "year_days": number, "surface_area_km2": number, "land_percentage": number, "ocean_percentage": number, "climate": string (2000+ mots: détaillé avec saisons, phénomènes uniques, microclimats, influence magique), "special_features": string (2000+ mots), "population": string, "moons": [{"name": string, "features": string (300+ mots), "mythology": string}] (5+), "atmosphere": {"composition": string, "sky_color": string, "phenomena": string (500+ mots)}, "geology": {"resources": [{"name": string, "rarity": string, "magical_properties": string (300+ mots)}] (15+)}, "evolution_history": [{"era": string, "development": string (500+ mots)}] (10+), "wonders": [{"name": string, "description": string (500+ mots)}] (10+)}]}${parentInfo}`,
     
-    continent: `Crée ${count} continent(s) ULTRA-DÉTAILLÉ(S) appartenant à la planète parent. JSON:
-{"items": [{"name": string, "surface_area_km2": number, "percentage_of_land": number, "terrain_type": string, "climate": string (détaillé), "characteristics": string (200+ mots), "geography": {"mountains": [{"name": string, "height_m": number}], "rivers": [{"name": string, "length_km": number}], "forests": [{"name": string, "type": string, "dangers": string}]}, "natural_resources": [{"name": string, "magical_properties": string}], "fauna": [{"name": string, "type": string, "danger_level": string}], "flora": [{"name": string, "properties": string}], "magical_sites": [{"name": string, "power": string}], "ancient_ruins": [{"name": string, "builder": string, "secrets": string}]}]}${parentInfo}`,
+    continent: `Crée ${count} continent(s) ENCYCLOPÉDIQUE(S). Chaque champ texte = essai narratif long. JSON:
+{"items": [{"name": string, "surface_area_km2": number, "percentage_of_land": number, "terrain_type": string, "climate": string (2000+ mots), "characteristics": string (3000+ mots), "geography": {"mountains": [{"name": string, "height_m": number, "legends": string}] (10+), "rivers": [{"name": string, "length_km": number, "importance": string}] (10+), "forests": [{"name": string, "type": string, "dangers": string (300+ mots), "creatures": string}] (10+)}, "natural_resources": [{"name": string, "magical_properties": string (300+ mots)}] (15+), "fauna": [{"name": string, "type": string, "danger_level": string, "description": string}] (20+), "flora": [{"name": string, "properties": string (200+ mots)}] (20+), "magical_sites": [{"name": string, "power": string (500+ mots)}] (10+), "ancient_ruins": [{"name": string, "builder": string, "secrets": string (500+ mots)}] (10+)}]}${parentInfo}`,
     
-    nation: `Crée ${count} nation(s) ULTRA-DÉTAILLÉE(S) appartenant au continent parent. JSON:
-{"items": [{"name": string, "government_type": string, "population": string, "surface_area_km2": number, "capital_city": string, "capital_population": string, "culture": string (150+ mots: valeurs, traditions, festivals, cuisine, langue), "religion": string (150+ mots: foi, panthéon, rituels), "economy": string (150+ mots: monnaie, industries, guildes, commerce), "military": string (100+ mots: forces, unités d'élite, fortifications, guerres récentes), "history": string (200+ mots avec dates), "special_features": string (100+ mots)}]}${parentInfo}`,
+    nation: `Crée ${count} nation(s) ENCYCLOPÉDIQUE(S). Chaque champ texte = essai narratif long. JSON:
+{"items": [{"name": string, "government_type": string, "population": string, "surface_area_km2": number, "capital_city": string, "capital_population": string, "culture": string (3000+ mots: valeurs, traditions 20+, festivals 15+, cuisine 30+ plats, langue avec 50+ mots, arts, musique, mode, architecture), "religion": string (2000+ mots: foi, panthéon 15+ dieux, rituels 20+, jours sacrés 30+, hérésies, ordres religieux), "economy": string (2000+ mots: monnaie, industries 15+, guildes 10+, commerce, crises), "military": string (2000+ mots: forces, unités d'élite 10+, fortifications 10+, guerres récentes 10+, doctrines), "history": string (5000+ mots avec dates et ères complètes), "special_features": string (1000+ mots)}]}${parentInfo}`,
     
-    race: `Crée ${count} race(s)/espèce(s) ULTRA-DÉTAILLÉE(S) appartenant à la nation parent. JSON:
-{"items": [{"name": string, "physical_traits": string (100+ mots: apparence, taille, traits distinctifs), "lifespan": string, "magic_ability": string (100+ mots: pouvoirs innés, affinité, limitations), "culture": string (100+ mots: structure sociale, valeurs, arts), "society_structure": string, "strengths": string, "weaknesses": string, "history": string (150+ mots)}]}${parentInfo}`,
+    race: `Crée ${count} race(s)/espèce(s) ENCYCLOPÉDIQUE(S). Chaque champ texte = essai narratif long. JSON:
+{"items": [{"name": string, "physical_traits": string (2000+ mots: apparence, taille, traits distinctifs, dimorphisme, sous-espèces, variations régionales), "lifespan": string, "magic_ability": string (2000+ mots: pouvoirs innés 20+, affinité, limitations, traditions magiques uniques, artefacts raciaux), "culture": string (2000+ mots: structure sociale, valeurs, arts, musique, cuisine, langue), "society_structure": string (1000+ mots), "strengths": string (500+ mots), "weaknesses": string (500+ mots), "history": string (3000+ mots avec chronologie complète)}]}${parentInfo}`,
     
-    family: `Crée ${count} famille(s)/lignée(s) noble(s) ULTRA-DÉTAILLÉE(S) appartenant à la nation parent. JSON:
-{"items": [{"name": string, "rank": string, "motto": string, "coat_of_arms": string (description héraldique), "history": string (200+ mots avec dates), "wealth_level": string, "political_power": string, "lands_controlled": string, "alliances": string, "rivals": string, "notable_members": [{"name": string, "title": string, "personality": string, "achievements": [string], "secrets": string}]}]}${parentInfo}`,
+    family: `Crée ${count} famille(s)/lignée(s) noble(s) ENCYCLOPÉDIQUE(S). Chaque champ texte = essai narratif long. JSON:
+{"items": [{"name": string, "rank": string, "motto": string, "coat_of_arms": string (500+ mots, description héraldique complète), "history": string (5000+ mots avec dates, batailles, trahisons, alliances, mariages), "wealth_level": string, "political_power": string (1000+ mots), "lands_controlled": string (1000+ mots), "alliances": string (1000+ mots), "rivals": string (1000+ mots), "notable_members": [{"name": string, "title": string, "personality": string (300+ mots), "achievements": [string] (10+), "secrets": string (300+ mots)}] (15+ membres)}]}${parentInfo}`,
   };
   
   return prompts[step] || prompts.universe;
@@ -620,9 +625,10 @@ async function handleStepwiseGeneration(prompt: string, step: string, count: num
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model: "google/gemini-2.5-pro",
       messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: userMessage }],
       stream: true,
+      max_tokens: 65000,
     }),
   });
 

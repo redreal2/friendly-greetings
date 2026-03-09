@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Loader2, Sparkles, Layers, X, Globe, Mountain, Crown, Users, Home, Orbit, Check } from 'lucide-react';
@@ -68,13 +68,13 @@ export function StepwiseGenerationModal({ open, onOpenChange, onComplete }: Step
   };
 
   const scaleControls = [
-    { key: 'universes', label: 'Univers', icon: <Sparkles className="w-4 h-4" />, min: 1, max: 3 },
-    { key: 'galaxiesPerUniverse', label: 'Galaxies / univers', icon: <Orbit className="w-4 h-4" />, min: 1, max: 5 },
-    { key: 'planetsPerGalaxy', label: 'Planètes / galaxie', icon: <Globe className="w-4 h-4" />, min: 1, max: 5 },
-    { key: 'continentsPerPlanet', label: 'Continents / planète', icon: <Mountain className="w-4 h-4" />, min: 1, max: 4 },
-    { key: 'nationsPerContinent', label: 'Nations / continent', icon: <Crown className="w-4 h-4" />, min: 1, max: 4 },
-    { key: 'racesPerNation', label: 'Races / nation', icon: <Users className="w-4 h-4" />, min: 0, max: 3 },
-    { key: 'familiesPerNation', label: 'Familles / nation', icon: <Home className="w-4 h-4" />, min: 0, max: 3 },
+    { key: 'universes', label: 'Univers', icon: <Sparkles className="w-4 h-4" />, min: 1 },
+    { key: 'galaxiesPerUniverse', label: 'Galaxies / univers', icon: <Orbit className="w-4 h-4" />, min: 1 },
+    { key: 'planetsPerGalaxy', label: 'Planètes / galaxie', icon: <Globe className="w-4 h-4" />, min: 1 },
+    { key: 'continentsPerPlanet', label: 'Continents / planète', icon: <Mountain className="w-4 h-4" />, min: 1 },
+    { key: 'nationsPerContinent', label: 'Nations / continent', icon: <Crown className="w-4 h-4" />, min: 1 },
+    { key: 'racesPerNation', label: 'Races / nation', icon: <Users className="w-4 h-4" />, min: 0 },
+    { key: 'familiesPerNation', label: 'Familles / nation', icon: <Home className="w-4 h-4" />, min: 0 },
   ];
 
   return (
@@ -118,13 +118,12 @@ export function StepwiseGenerationModal({ open, onOpenChange, onComplete }: Step
                       {scale[ctrl.key as keyof typeof scale]}
                     </span>
                   </div>
-                  <Slider
-                    value={[scale[ctrl.key as keyof typeof scale]]}
-                    onValueChange={([v]) => setScale(prev => ({ ...prev, [ctrl.key]: v }))}
+                  <Input
+                    type="number"
+                    value={scale[ctrl.key as keyof typeof scale]}
+                    onChange={(e) => setScale(prev => ({ ...prev, [ctrl.key]: Math.max(ctrl.min, parseInt(e.target.value) || 0) }))}
                     min={ctrl.min}
-                    max={ctrl.max}
-                    step={1}
-                    className="cursor-pointer"
+                    className="h-8 w-full bg-background/50 border-border/50 font-mono text-center"
                   />
                 </motion.div>
               ))}

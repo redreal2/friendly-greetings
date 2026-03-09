@@ -390,61 +390,68 @@ function DetailView({ type, data }: { type: NodeType; data: Record<string, unkno
   );
 }
 
-function DetailField({ label, value }: { label: string; value: unknown }) {
-  // JSON objects / arrays
-  if (typeof value === 'object' && value !== null) {
-    let parsed = value;
-    if (typeof value === 'string') {
-      try { parsed = JSON.parse(value as string); } catch { /* keep as-is */ }
-    }
-
-    if (Array.isArray(parsed)) {
-      return (
-        <div className="card-cosmic rounded-lg p-4">
-          <h4 className="text-sm font-semibold text-primary mb-3 capitalize">{label}</h4>
-          <div className="space-y-2">
-            {(parsed as unknown[]).map((item, idx) => (
-              <div key={idx} className="p-3 bg-muted/30 rounded-md text-sm">
-                {typeof item === 'object' && item !== null ? (
-                  Object.entries(item as Record<string, unknown>).map(([k, v]) => (
-                    <p key={k} className="mb-1">
-                      <span className="text-muted-foreground capitalize">{k.replace(/_/g, ' ')}:</span>{' '}
-                      <span className="text-foreground/90">{typeof v === 'object' ? JSON.stringify(v) : String(v)}</span>
-                    </p>
-                  ))
-                ) : (
-                  <span>{String(item)}</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    if (typeof parsed === 'object') {
-      return (
-        <div className="card-cosmic rounded-lg p-4">
-          <h4 className="text-sm font-semibold text-primary mb-3 capitalize">{label}</h4>
-          <div className="space-y-1">
-            {Object.entries(parsed as Record<string, unknown>).map(([k, v]) => (
-              <p key={k} className="text-sm">
-                <span className="text-muted-foreground capitalize">{k.replace(/_/g, ' ')}:</span>{' '}
-                <span className="text-foreground/90">{typeof v === 'object' ? JSON.stringify(v) : String(v)}</span>
-              </p>
-            ))}
-          </div>
-        </div>
-      );
+function tryParseJSON(value: unknown): unknown {
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if ((trimmed.startsWith('{') || trimmed.startsWith('[')) && (trimmed.endsWith('}') || trimmed.endsWith(']'))) {
+      try { return JSON.parse(trimmed); } catch { /* fall through */ }
     }
   }
+  return value;
+}
 
-  // Try parsing JSON strings
-  if (typeof value === 'string' && (value.startsWith('{') || value.startsWith('['))) {
-    try {
-      const parsed = JSON.parse(value);
-      return <DetailField label={label} value={parsed} />;
-    } catch { /* fall through */ }
+function RenderValue({ value, depth = 0 }: { value: unknown; depth?: number }) {
+  const parsed = tryParseJSON(value);
+
+  if (Array.isArray(parsed)) {
+    return (
+      <div className="space-y-2">
+        {parsed.map((item, idx) => (
+          <div key={idx} className="p-3 bg-muted/20 rounded-md border border-border/20">
+            <RenderValue value={item} depth={depth + 1} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (typeof parsed === 'object' && parsed !== null) {
+    return (
+      <div className="space-y-1.5">
+        {Object.entries(parsed as Record<string, unknown>).map(([k, v]) => {
+          const innerParsed = tryParseJSON(v);
+          const isComplex = typeof innerParsed === 'object' && innerParsed !== null;
+          return (
+            <div key={k} className={isComplex ? 'mt-2' : ''}>
+              <span className="text-xs font-semibold text-primary/80 capitalize">{k.replace(/_/g, ' ')}:</span>{' '}
+              {isComplex ? (
+                <div className="ml-3 mt-1">
+                  <RenderValue value={innerParsed} depth={depth + 1} />
+                </div>
+              ) : (
+                <span className="text-sm text-foreground/90">{String(v)}</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return <span className="text-sm text-foreground/90">{String(parsed)}</span>;
+}
+
+function DetailField({ label, value }: { label: string; value: unknown }) {
+  const parsed = tryParseJSON(value);
+
+  // Complex objects/arrays
+  if (typeof parsed === 'object' && parsed !== null) {
+    return (
+      <div className="card-cosmic rounded-lg p-4">
+        <h4 className="text-sm font-semibold text-primary mb-3 capitalize">{label}</h4>
+        <RenderValue value={parsed} />
+      </div>
+    );
   }
 
   // Numbers
