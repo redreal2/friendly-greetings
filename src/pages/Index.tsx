@@ -241,6 +241,7 @@ export default function Index() {
 
       <GenerationModal open={modalOpen} onOpenChange={setModalOpen} type={currentType} context={currentContext} onGenerated={handleGenerated} />
       <MassGenerationModal open={massModalOpen} onOpenChange={setMassModalOpen} onGenerated={handleMassGenerated} />
+      <StepwiseGenerationModal open={stepwiseModalOpen} onOpenChange={setStepwiseModalOpen} onComplete={() => loadUniverses()} />
     </div>
   );
 }
