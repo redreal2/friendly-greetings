@@ -67,35 +67,35 @@ serve(async (req) => {
 
 function getTypePrompt(type: string): string {
   const prompts: Record<string, string> = {
-    universe: `Crée un univers/multivers ULTRA-DÉTAILLÉ. JSON:
+    universe: `Crée un univers/multivers avec un niveau de détail ENCYCLOPÉDIQUE. Chaque champ texte doit être un ESSAI NARRATIF de plusieurs milliers de mots. JSON:
 {
   "name": string,
-  "description": string (800+ mots, épique),
-  "origin_story": string (500+ mots: Big Bang ou création divine, premiers instants, formation des premières étoiles),
+  "description": string (5000+ mots minimum, épique, couvrant chaque aspect de l'univers),
+  "origin_story": string (3000+ mots: Big Bang ou création divine, premiers instants détaillés seconde par seconde, formation des premières étoiles, émergence de la conscience),
   "age_billions_years": number,
   "dimensions_count": number,
   "magic_system": {
     "name": string,
-    "source": string (d'où vient la magie),
-    "rules": [string] (5+ règles fondamentales),
-    "schools": [{"name": string, "specialty": string, "philosophy": string}],
-    "forbidden_arts": [{"name": string, "why_forbidden": string, "consequences": string}],
-    "energy_types": [{"name": string, "color": string, "properties": string}],
-    "artifacts": [{"name": string, "power": string, "location": string, "history": string}]
+    "source": string (1000+ mots sur l'origine de la magie),
+    "rules": [string] (20+ règles fondamentales, chacune détaillée),
+    "schools": [{"name": string, "specialty": string, "philosophy": string, "history": string, "notable_graduates": [string], "entry_requirements": string, "curriculum": string}] (10+ écoles),
+    "forbidden_arts": [{"name": string, "why_forbidden": string, "consequences": string, "practitioners": string, "detection_methods": string}] (10+),
+    "energy_types": [{"name": string, "color": string, "properties": string (500+ mots), "interactions": string, "sources": string, "dangers": string}] (8+ types),
+    "artifacts": [{"name": string, "power": string (300+ mots), "location": string, "history": string (500+ mots), "creator": string, "current_guardian": string}] (15+ artefacts)
   },
-  "laws_of_physics": string (différences avec notre univers),
+  "laws_of_physics": string (2000+ mots sur les différences avec notre univers),
   "cosmology": {
-    "structure": string (comment l'univers est organisé),
-    "planes_of_existence": [{"name": string, "nature": string, "inhabitants": string}],
-    "creation_myths": [{"culture": string, "myth": string}]
+    "structure": string (2000+ mots sur l'organisation de l'univers),
+    "planes_of_existence": [{"name": string, "nature": string (500+ mots), "inhabitants": string, "access_methods": string, "dangers": string}] (10+ plans),
+    "creation_myths": [{"culture": string, "myth": string (1000+ mots)}] (5+ mythes)
   },
   "chronology": {
-    "eras": [{"name": string, "start_year": string, "end_year": string, "description": string, "key_events": [string]}]
+    "eras": [{"name": string, "start_year": string, "end_year": string, "description": string (1000+ mots), "key_events": [string]}] (10+ ères)
   },
-  "cosmic_phenomena": [{"name": string, "frequency": string, "effects": string}],
-  "universal_languages": [{"name": string, "speakers": string, "sample_words": [{"word": string, "meaning": string}]}],
-  "prophecies": [{"name": string, "content": string, "status": string}],
-  "notable_events": [{"name": string, "date": string, "description": string, "consequences": string}]
+  "cosmic_phenomena": [{"name": string, "frequency": string, "effects": string (500+ mots), "scientific_explanation": string, "cultural_significance": string}] (15+),
+  "universal_languages": [{"name": string, "speakers": string, "grammar_overview": string, "sample_words": [{"word": string, "meaning": string}]}] (5+ langues, 50+ mots par langue),
+  "prophecies": [{"name": string, "content": string (500+ mots), "status": string, "interpretations": [string]}] (10+),
+  "notable_events": [{"name": string, "date": string, "description": string (500+ mots), "consequences": string}] (20+)
 }`,
 
     galaxy: `Crée une galaxie ULTRA-DÉTAILLÉE. JSON:
