@@ -68,13 +68,13 @@ export function StepwiseGenerationModal({ open, onOpenChange, onComplete }: Step
   };
 
   const scaleControls = [
-    { key: 'universes', label: 'Univers', icon: <Sparkles className="w-4 h-4" />, min: 1, max: 3 },
-    { key: 'galaxiesPerUniverse', label: 'Galaxies / univers', icon: <Orbit className="w-4 h-4" />, min: 1, max: 5 },
-    { key: 'planetsPerGalaxy', label: 'Planètes / galaxie', icon: <Globe className="w-4 h-4" />, min: 1, max: 5 },
-    { key: 'continentsPerPlanet', label: 'Continents / planète', icon: <Mountain className="w-4 h-4" />, min: 1, max: 4 },
-    { key: 'nationsPerContinent', label: 'Nations / continent', icon: <Crown className="w-4 h-4" />, min: 1, max: 4 },
-    { key: 'racesPerNation', label: 'Races / nation', icon: <Users className="w-4 h-4" />, min: 0, max: 3 },
-    { key: 'familiesPerNation', label: 'Familles / nation', icon: <Home className="w-4 h-4" />, min: 0, max: 3 },
+    { key: 'universes', label: 'Univers', icon: <Sparkles className="w-4 h-4" />, min: 1 },
+    { key: 'galaxiesPerUniverse', label: 'Galaxies / univers', icon: <Orbit className="w-4 h-4" />, min: 1 },
+    { key: 'planetsPerGalaxy', label: 'Planètes / galaxie', icon: <Globe className="w-4 h-4" />, min: 1 },
+    { key: 'continentsPerPlanet', label: 'Continents / planète', icon: <Mountain className="w-4 h-4" />, min: 1 },
+    { key: 'nationsPerContinent', label: 'Nations / continent', icon: <Crown className="w-4 h-4" />, min: 1 },
+    { key: 'racesPerNation', label: 'Races / nation', icon: <Users className="w-4 h-4" />, min: 0 },
+    { key: 'familiesPerNation', label: 'Familles / nation', icon: <Home className="w-4 h-4" />, min: 0 },
   ];
 
   return (
