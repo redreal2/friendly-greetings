@@ -13,7 +13,7 @@ import { SavedUniversesViewer } from '@/components/SavedUniversesViewer';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { 
-  Sparkles, Globe, Mountain, Crown, Users, Home, LogOut, Zap, Orbit, Database
+  Sparkles, Globe, Mountain, Crown, Users, Home, LogOut, Zap, Orbit, Database, Layers
 } from 'lucide-react';
 import { toast } from 'sonner';
 
