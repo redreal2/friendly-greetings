@@ -160,17 +160,31 @@ export default function Index() {
             Générez des galaxies, planètes, nations, races et familles nobles. Tout est sauvegardé automatiquement.
           </p>
 
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              onClick={() => setMassModalOpen(true)}
-              size="lg"
-              className="btn-cosmic gap-3 text-lg px-8 py-6"
-            >
-              <Zap className="w-6 h-6" />
-              Génération Massive
-              <InlineBadge className="bg-cosmic-gold/20 text-cosmic-gold border-cosmic-gold/30 ml-2">AUTO-SAVE</InlineBadge>
-            </Button>
-          </motion.div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={() => setStepwiseModalOpen(true)}
+                size="lg"
+                className="btn-cosmic gap-3 text-lg px-8 py-6"
+              >
+                <Layers className="w-6 h-6" />
+                Génération par Étapes
+                <InlineBadge className="bg-accent/20 text-accent border-accent/30 ml-2">FIABLE</InlineBadge>
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={() => setMassModalOpen(true)}
+                size="lg"
+                variant="outline"
+                className="gap-3 text-lg px-8 py-6 border-primary/30"
+              >
+                <Zap className="w-6 h-6" />
+                Génération Massive
+                <InlineBadge className="bg-cosmic-gold/20 text-cosmic-gold border-cosmic-gold/30 ml-2">RAPIDE</InlineBadge>
+              </Button>
+            </motion.div>
+          </div>
         </motion.section>
 
         {/* Single creation cards */}
