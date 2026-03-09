@@ -583,6 +583,53 @@ IMPORTANT: Génère EXACTEMENT le nombre d'éléments demandés. Chaque élémen
   return new Response(response.body, { headers: { ...corsHeaders, "Content-Type": "text/event-stream" } });
 }
 
+function getStepwisePrompt(step: string, count: number, parentContext: any): string {
+  const parentInfo = parentContext ? `\nContexte parent: ${JSON.stringify(parentContext)}` : '';
+  
+  const prompts: Record<string, string> = {
+    universe: `Crée ${count} univers ULTRA-DÉTAILLÉ(S). Réponds avec un JSON:
+{"items": [{"name": string, "description": string (200+ mots), "origin_story": string (200+ mots), "age_billions_years": number, "magic_system": {"name": string, "source": string, "rules": [string], "schools": [{"name": string, "specialty": string}], "forbidden_arts": [{"name": string, "consequences": string}], "energy_types": [{"name": string, "color": string, "properties": string}]}, "laws_of_physics": string, "cosmology": {"structure": string, "planes": [{"name": string, "nature": string}]}, "chronology": [{"era": string, "period": string, "events": [string]}], "prophecies": [{"name": string, "content": string}]}]}${parentInfo}`,
+    
+    galaxy: `Crée ${count} galaxie(s) ULTRA-DÉTAILLÉE(S) appartenant à l'univers parent. JSON:
+{"items": [{"name": string, "galaxy_type": string, "star_count": string, "diameter_light_years": number, "origin_story": string (150+ mots), "special_features": string, "regions": [{"name": string, "description": string, "resources": string}], "trade_routes": [{"name": string, "connects": string, "goods": string}], "galactic_wars": [{"name": string, "date": string, "outcome": string}], "anomalies": [{"name": string, "nature": string}]}]}${parentInfo}`,
+    
+    planet: `Crée ${count} planète(s) ULTRA-DÉTAILLÉE(S) appartenant à la galaxie parent. JSON:
+{"items": [{"name": string, "planet_type": string, "diameter_km": number, "gravity_g": number, "day_cycle_hours": number, "year_days": number, "surface_area_km2": number, "land_percentage": number, "ocean_percentage": number, "climate": string (détaillé avec saisons et phénomènes uniques), "special_features": string (200+ mots), "population": string, "moons": [{"name": string, "features": string}], "atmosphere": {"composition": string, "sky_color": string}, "geology": {"resources": [{"name": string, "rarity": string, "magical_properties": string}]}, "evolution_history": [{"era": string, "development": string}], "wonders": [{"name": string, "description": string}]}]}${parentInfo}`,
+    
+    continent: `Crée ${count} continent(s) ULTRA-DÉTAILLÉ(S) appartenant à la planète parent. JSON:
+{"items": [{"name": string, "surface_area_km2": number, "percentage_of_land": number, "terrain_type": string, "climate": string (détaillé), "characteristics": string (200+ mots), "geography": {"mountains": [{"name": string, "height_m": number}], "rivers": [{"name": string, "length_km": number}], "forests": [{"name": string, "type": string, "dangers": string}]}, "natural_resources": [{"name": string, "magical_properties": string}], "fauna": [{"name": string, "type": string, "danger_level": string}], "flora": [{"name": string, "properties": string}], "magical_sites": [{"name": string, "power": string}], "ancient_ruins": [{"name": string, "builder": string, "secrets": string}]}]}${parentInfo}`,
+    
+    nation: `Crée ${count} nation(s) ULTRA-DÉTAILLÉE(S) appartenant au continent parent. JSON:
+{"items": [{"name": string, "government_type": string, "population": string, "surface_area_km2": number, "capital_city": string, "capital_population": string, "culture": string (150+ mots: valeurs, traditions, festivals, cuisine, langue), "religion": string (150+ mots: foi, panthéon, rituels), "economy": string (150+ mots: monnaie, industries, guildes, commerce), "military": string (100+ mots: forces, unités d'élite, fortifications, guerres récentes), "history": string (200+ mots avec dates), "special_features": string (100+ mots)}]}${parentInfo}`,
+    
+    race: `Crée ${count} race(s)/espèce(s) ULTRA-DÉTAILLÉE(S) appartenant à la nation parent. JSON:
+{"items": [{"name": string, "physical_traits": string (100+ mots: apparence, taille, traits distinctifs), "lifespan": string, "magic_ability": string (100+ mots: pouvoirs innés, affinité, limitations), "culture": string (100+ mots: structure sociale, valeurs, arts), "society_structure": string, "strengths": string, "weaknesses": string, "history": string (150+ mots)}]}${parentInfo}`,
+    
+    family: `Crée ${count} famille(s)/lignée(s) noble(s) ULTRA-DÉTAILLÉE(S) appartenant à la nation parent. JSON:
+{"items": [{"name": string, "rank": string, "motto": string, "coat_of_arms": string (description héraldique), "history": string (200+ mots avec dates), "wealth_level": string, "political_power": string, "lands_controlled": string, "alliances": string, "rivals": string, "notable_members": [{"name": string, "title": string, "personality": string, "achievements": [string], "secrets": string}]}]}${parentInfo}`,
+  };
+  
+  return prompts[step] || prompts.universe;
+}
+
+async function handleStepwiseGeneration(prompt: string, step: string, count: number, parentContext: any, apiKey: string) {
+  const stepPrompt = getStepwisePrompt(step, count, parentContext);
+  const userMessage = `${stepPrompt}\n\nThème général: ${prompt}`;
+
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: userMessage }],
+      stream: true,
+    }),
+  });
+
+  if (!response.ok) return handleAIError(response);
+  return new Response(response.body, { headers: { ...corsHeaders, "Content-Type": "text/event-stream" } });
+}
+
 async function handleAIError(response: Response) {
   if (response.status === 429) {
     return new Response(JSON.stringify({ error: "Limite de requêtes dépassée, réessayez dans quelques instants." }), {
