@@ -581,6 +581,7 @@ IMPORTANT: Génère EXACTEMENT le nombre d'éléments demandés. Chaque élémen
       model: "google/gemini-2.5-pro",
       messages: [{ role: "system", content: MASS_SYSTEM_PROMPT }, { role: "user", content: massPrompt }],
       stream: true,
+      max_tokens: 65000,
     }),
   });
 
