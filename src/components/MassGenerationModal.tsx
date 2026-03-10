@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Sparkles, Zap, X, Globe, Mountain, Crown, Users, Home, Orbit } from 'lucide-react';
+import { Loader2, Zap, X } from 'lucide-react';
+import { ScaleControls, ScaleConfig, computeTotalElements } from '@/components/ScaleControls';
 import { useUniverseGenerator } from '@/hooks/useUniverseGenerator';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,7 +17,7 @@ interface MassGenerationModalProps {
 
 export function MassGenerationModal({ open, onOpenChange, onGenerated }: MassGenerationModalProps) {
   const [prompt, setPrompt] = useState('');
-  const [scale, setScale] = useState({
+  const [scale, setScale] = useState<ScaleConfig>({
     universes: 1,
     galaxiesPerUniverse: 2,
     planetsPerGalaxy: 3,
@@ -29,14 +28,7 @@ export function MassGenerationModal({ open, onOpenChange, onGenerated }: MassGen
   });
   const { massGenerate, isGenerating, streamedContent, error, progress, cancel } = useUniverseGenerator();
 
-  const totalElements =
-    scale.universes +
-    scale.universes * scale.galaxiesPerUniverse +
-    scale.universes * scale.galaxiesPerUniverse * scale.planetsPerGalaxy +
-    scale.universes * scale.galaxiesPerUniverse * scale.planetsPerGalaxy * scale.continentsPerPlanet +
-    scale.universes * scale.galaxiesPerUniverse * scale.planetsPerGalaxy * scale.continentsPerPlanet * scale.nationsPerContinent +
-    scale.universes * scale.galaxiesPerUniverse * scale.planetsPerGalaxy * scale.continentsPerPlanet * scale.nationsPerContinent * scale.racesPerNation +
-    scale.universes * scale.galaxiesPerUniverse * scale.planetsPerGalaxy * scale.continentsPerPlanet * scale.nationsPerContinent * scale.familiesPerNation;
+  const totalElements = computeTotalElements(scale);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -56,16 +48,6 @@ export function MassGenerationModal({ open, onOpenChange, onGenerated }: MassGen
     }
   };
 
-  const scaleControls = [
-    { key: 'universes', label: 'Univers', icon: <Sparkles className="w-4 h-4" />, min: 1 },
-    { key: 'galaxiesPerUniverse', label: 'Galaxies / univers', icon: <Orbit className="w-4 h-4" />, min: 1 },
-    { key: 'planetsPerGalaxy', label: 'Planètes / galaxie', icon: <Globe className="w-4 h-4" />, min: 1 },
-    { key: 'continentsPerPlanet', label: 'Continents / planète', icon: <Mountain className="w-4 h-4" />, min: 1 },
-    { key: 'nationsPerContinent', label: 'Nations / continent', icon: <Crown className="w-4 h-4" />, min: 1 },
-    { key: 'racesPerNation', label: 'Races / nation', icon: <Users className="w-4 h-4" />, min: 0 },
-    { key: 'familiesPerNation', label: 'Familles / nation', icon: <Home className="w-4 h-4" />, min: 0 },
-  ];
-
   return (
     <Dialog open={open} onOpenChange={isGenerating ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-3xl card-cosmic border-primary/30 max-h-[90vh] overflow-y-auto">
@@ -81,57 +63,27 @@ export function MassGenerationModal({ open, onOpenChange, onGenerated }: MassGen
 
         <div className="space-y-6">
           <Textarea
-            placeholder="Décris le thème de ton univers... Ex: Un multivers steampunk où la magie est alimentée par des cristaux dimensionnels, avec des civilisations en guerre pour le contrôle des portails entre dimensions..."
+            placeholder="Décris le thème de ton univers... Ex: Un multivers steampunk où la magie est alimentée par des cristaux dimensionnels..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             className="min-h-[100px] bg-muted/50 border-border/50 focus:border-primary/50 resize-none"
             disabled={isGenerating}
           />
 
-          {/* Scale Controls */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {scaleControls.map((ctrl) => (
-              <motion.div
-                key={ctrl.key}
-                className="p-3 rounded-lg bg-muted/30 border border-border/30 space-y-2"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="flex items-center justify-between">
-                  <Label className="flex items-center gap-2 text-sm text-foreground/80">
-                    <span className="text-primary">{ctrl.icon}</span>
-                    {ctrl.label}
-                  </Label>
-                  <span className="text-sm font-mono text-primary font-bold">
-                    {scale[ctrl.key as keyof typeof scale]}
-                  </span>
-                </div>
-                <Input
-                  type="number"
-                  value={scale[ctrl.key as keyof typeof scale]}
-                  onChange={(e) => setScale(prev => ({ ...prev, [ctrl.key]: Math.max(ctrl.min, parseInt(e.target.value) || 0) }))}
-                  min={ctrl.min}
-                  disabled={isGenerating}
-                  className="h-8 w-full bg-background/50 border-border/50 font-mono text-center"
-                />
-              </motion.div>
-            ))}
-          </div>
+          {!isGenerating && (
+            <>
+              <ScaleControls scale={scale} onChange={setScale} />
 
-          {/* Total Counter */}
-          <motion.div
-            className="p-4 rounded-lg bg-primary/10 border border-primary/30 text-center"
-            animate={{ scale: [1, 1.02, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <p className="text-sm text-muted-foreground mb-1">Total d'éléments à générer</p>
-            <p className="text-4xl font-display glow-text font-bold">{totalElements}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              univers, galaxies, planètes, continents, nations, races et familles
-            </p>
-          </motion.div>
+              <div className="p-4 rounded-lg bg-primary/10 border border-primary/30 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Total d'éléments à générer</p>
+                <p className="text-4xl font-display glow-text font-bold">{totalElements}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  univers, galaxies, planètes, continents, nations, races et familles
+                </p>
+              </div>
+            </>
+          )}
 
-          {/* Progress */}
           <AnimatePresence>
             {isGenerating && (
               <motion.div
@@ -160,7 +112,6 @@ export function MassGenerationModal({ open, onOpenChange, onGenerated }: MassGen
             )}
           </AnimatePresence>
 
-          {/* Actions */}
           <div className="flex justify-end gap-3">
             {isGenerating ? (
               <Button variant="destructive" onClick={cancel} className="gap-2">
